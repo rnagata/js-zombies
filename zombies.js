@@ -8,6 +8,10 @@
  * @property {string} name
  */
 
+function Item() {
+  console.log('test');
+}
+
 
 /**
  * Class => Weapon(name, damage)
