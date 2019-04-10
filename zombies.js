@@ -8,6 +8,11 @@
  * @property {string} name
  */
 
+class Item {
+  constructor(name) {
+    this.name = name;
+  }
+}
 
 /**
  * Class => Weapon(name, damage)
@@ -25,13 +30,17 @@
  * @property {number} damage
  */
 
-
 /**
- * Weapon Extends Item Class
- * -----------------------------
- */
+* Weapon Extends Item Class
+* -----------------------------
+*/
 
-
+class Weapon extends Item {
+  constructor(name, damage) {
+    super(name);
+    this.damage = damage;
+  }
+}
 
 /**
  * Class => Food(name, energy)
@@ -49,13 +58,17 @@
  * @property {number} energy
  */
 
-
 /**
- * Food Extends Item Class
- * -----------------------------
- */
+* Food Extends Item Class
+* -----------------------------
+*/
 
-
+class Food extends Item {
+  constructor(name, energy) {
+    super(name);
+    this.energy = energy;
+  }
+}
 
 /**
  * Class => Player(name, health, strength, speed)
@@ -79,38 +92,54 @@
  * @property {method} getMaxHealth         Returns private variable `maxHealth`.
  */
 
+class Player {
+  constructor(name, health, strength, speed) {
+    this.name = name;
+    this.health = health;
+    this.strength = strength;
+    this.speed = speed;
+    this._pack = [];
+    this._maxHealth = this.health;
+    this.isAlive = true;
+    this.equipped = false;
+  }
 
-/**
- * Player Class Method => checkPack()
- * -----------------------------
- * Player checks the contents of their pack.
- *
- * Nicely format and print the items in the player's pack.
- * To access the pack, be sure to use Player's getPack method.
- * You should be able to invoke this function on a Player instance.
- *
- * @name checkPack
- */
+  getPack() {
+    return this._pack;
+  }
 
+  getMaxHealth() {
+    if (!this._maxHealth) {
+      return this.health;
+    }
+    return this._maxHealth;
+  }
 
-/**
- * Player Class Method => takeItem(item)
- * -----------------------------
- * Player takes an item from the world and places it into their pack.
- *
- * Player's pack can only hold a maximum of 3 items, so if they try to add more
- *   than that to the pack, return false.
- * Before returning true or false, print a message containing the player's
- *   name and item's name if successful.  Otherwise, print a message saying
- *   that the pack is full so the item could not be stored.
- * Note: The player is allowed to store similar items (items with the same name).
- * You should be able to invoke this function on a Player instance.
- *
- * @name takeItem
- * @param {Item/Weapon/Food} item   The item to take.
- * @return {boolean} true/false     Whether player was able to store item in pack.
- */
+  /**
+* Player Class Method => takeItem(item)
+* -----------------------------
+* Player takes an item from the world and places it into their pack.
+*
+* Player's pack can only hold a maximum of 3 items, so if they try to add more
+*   than that to the pack, return false.
+* Before returning true or false, print a message containing the player's
+*   name and item's name if successful.  Otherwise, print a message saying
+*   that the pack is full so the item could not be stored.
+* Note: The player is allowed to store similar items (items with the same name).
+* You should be able to invoke this function on a Player instance.
+*
+* @name takeItem
+* @param {Item/Weapon/Food} item   The item to take.
+* @return {boolean} true/false     Whether player was able to store item in pack.
+*/
 
+  takeItem(item) {
+    if (this._pack.length === 3) {
+      console.log('pack is full so the item could not be stored');
+      return false;
+    }
+    this._pack.push(item);
+  }
 
 /**
  * Player Class Method => discardItem(item)
@@ -138,8 +167,34 @@
  * @return {boolean} true/false     Whether player was able to remove item from pack.
  */
 
+  discardItem(item) {
+    let index = this._pack.indexOf(item);
+    if (index === -1) {
+      console.log('item name saying nothing was discarded since the item could not be found');
+      return false;
+    }
+    this._pack.splice(index, 1);
+    console.log('player and item names and a message saying the item was discarded')
+    return true;
+  }
 
-/**
+  /**
+* Player Class Method => checkPack()
+* -----------------------------
+* Player checks the contents of their pack.
+*
+* Nicely format and print the items in the player's pack.
+* To access the pack, be sure to use Player's getPack method.
+* You should be able to invoke this function on a Player instance.
+*
+* @name checkPack
+*/
+
+  checkPack(){
+    console.log(this._pack);
+  }
+
+  /**
  * Player Class Method => equip(itemToEquip)
  * -----------------------------
  * Player equips a weapon item.
@@ -159,8 +214,28 @@
  * @param {Weapon} itemToEquip  The weapon item to equip.
  */
 
+  equip (itemToEquip){
+    
+    if (!itemToEquip instanceof Weapon){
+      return false;
+    }
 
-/**
+    let index = this._pack.indexOf(itemToEquip);
+
+    if (index === -1){
+      return false;
+    }
+
+    if (this.equipped instanceof Weapon){
+      this._pack.push(this.equipped);
+    }
+    
+    this.equipped = itemToEquip;
+    this._pack.splice(index, 1);
+    
+  }
+
+  /**
  * Player Class Method => eat(itemToEat)
  * -----------------------------
  * Player eats a food item, restoring their health.
@@ -178,6 +253,38 @@
  * @name eat
  * @param {Food} itemToEat  The food item to eat.
  */
+
+  eat(itemToEat){
+    if (itemToEat instanceof Food){
+      let index = this._pack.indexOf(itemToEat);
+
+      if (index === -1){
+        return;
+      }
+
+      this._pack.splice(index, 1);
+      this.health += itemToEat.energy;
+      if (this.health > this.getMaxHealth()){
+        this.health = this.getMaxHealth();
+      }
+    }
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**
